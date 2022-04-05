@@ -30,30 +30,66 @@ sudo apt update
 sudo apt install -y vim mosh tmux htop git curl wget unzip zip gcc build-essential make
 
 2. Установка дополнительных необходимых пакетов.
-sudo apt install -y tree redis-server nginx zlib1g-dev libbz2-dev libreadline-dev llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev liblzma-dev python3-dev python-imaging python3-lxml libxslt-dev python-libxml2 python-libxslt1 libffi-dev libssl-dev python-dev gnumeric libsqlite3-dev libpq-dev libxml2-dev libxslt1-dev libjpeg-dev libfreetype6-dev libcurl4-openssl-dev supervisor
+sudo apt install -y tree redis-server nginx zlib1g-dev libffi-dev libbz2-dev libreadline-dev libreadline-gplv2-dev llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev liblzma-dev python3-dev python-imaging python3-lxml libxslt-dev python-libxml2 python-libxslt1 libffi-dev python-dev gnumeric libsqlite3-dev libpq-dev libxml2-dev libxslt1-dev libjpeg-dev libfreetype6-dev libcurl4-openssl-dev libgdbm-dev libc6-dev libssl-dev openssl supervisor
 
 3. Установка терминала zsh и дополнений к нему.
 sudo apt install zsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-Configure some needed aliases:
 
-vim ~/.zshrc
-    alias cls="clear"
-Install python 3.7
-mkdir ~/code
+4. Загрузка конфигурационных файлов со своего репозитория.
+git clone https://github.com/rodionnest/conf
+Удаление .git и перемещение файлов в ~/. Удаление папки conf.
+
+5. Настройка локалей для mosh.
+sudo localedef ru_RU.UTF-8 -i ru_RU -fUTF-8 ; \
+export LANGUAGE=ru_RU.UTF-8 ; \
+export LANG=ru_RU.UTF-8 ; \
+export LC_ALL=ru_RU.UTF-8 ; \
+sudo locale-gen ru_RU.UTF-8 ; \
+sudo dpkg-reconfigure locales
+
+Выставляем ru_RU.UTF-8
+Теперь можно подключаться через mosh.
+
+=========================================================================
+                           Установка Python
+=========================================================================
 
 Build from source python 3.7, install with prefix to ~/.python folder:
 
-wget https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tgz ; \
-tar xvf Python-3.7.* ; \
-cd Python-3.7.3 ; \
+1. Скачиваем и распаковываем последнюю версию https://www.python.org/downloads/source/. 
+wget https://www.python.org/ftp/python/3.10.4/Python-3.10.4.tgz ; \
+tar xvf Python-3.10.4.tgz ; \
+
+2. Переходим в распакованную директорию, создаем в рабочей папке папку '.python'.     
+cd Python-3.10.4 ; \
 mkdir ~/.python ; \
+
+3. Генерируем инсталл с префиксом.
 ./configure --enable-optimizations --prefix=/home/www/.python ; \
 make -j8 ; \
-sudo make altinstall
-Now python3.7 in /home/www/.python/bin/python3.7. Update pip:
 
-sudo /home/www/.python/bin/python3.7 -m pip install -U pip
+!При возникновении ошибки SSL проверь пакеты.
+
+4. Запускаем установку.
+sudo make altinstall
+
+Теперь python установлен здесь /home/www/.python/bin/ 
+
+5. Обновляем pip.
+sudo /home/www/.python/bin/python3.10 -m pip install -U pip
+
+6. Удаляем установочные файлы.
+
+7. Прокидываем путь к python в zsh.
+vim ~/.zshrc
+export PATH=$PATH:/home/www/.python/bin
+
+-------------------ЗАКОНЧИЛ ЗДЕСЬ-----------------------
+
+
+
+
 Ok, now we can pull our project from Git repository (or create own), create and activate Python virtual environment:
 
 cd code
