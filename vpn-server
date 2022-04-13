@@ -1,0 +1,96 @@
+Установка собственного VPN сервера на основе WireGuard.
+
+=========================================================================
+                          Установка WireGuard 
+=========================================================================
+
+1. Устаналиваем и переходим в папку 
+apt install -y wireguard 
+cd /etc/wireguard
+
+2. Генерируем ключи сервера:
+wg genkey | tee /etc/wireguard/privatekey | wg pubkey | tee /etc/wireguard/publickey
+
+3. Проставляем права на приватный ключ: chmod 600 /etc/wireguard/privatekey
+
+4. Проверяем как называется сетевой интерфейс: ip a (eth0 ens3 или что-то подобное)
+
+
+=========================================================================
+                         Настройка сервера 
+=========================================================================
+
+5. Создаем конфиг: vim /etc/wireguard/wg0.conf
+
+[Interface]
+PrivateKey = <privatekey>
+Address = 10.0.0.1/24
+ListenPort = 51830
+PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -t nat -A POSTROUTING -o ens3 -j MASQUERADE
+PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -t nat -D POSTROUTING -o ens3 -j MASQUERADE
+
+Вставляем вместо <privatekey> содержимое файла /etc/wireguard/privatekey
+#  Обратите внимание — в строках PostUp и PostDown использован как раз сетевой интерфейс ens3.
+
+6. Настраиваем IP форвардинг:
+echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf
+sysctl -p
+
+7. Включаем systemd демон с wireguard, затем запускаем и проверяем статус:
+systemctl enable wg-quick@wg0.service
+systemctl start wg-quick@wg0.service
+systemctl status wg-quick@wg0.service
+
+8. Разрешаем подключение к UDP порту 51830: sudo ufw allow 51830/udp
+sudo ufw status
+
+9. Создаём ключи клиента:
+wg genkey | tee /etc/wireguard/rodiox_privatekey | wg pubkey | tee /etc/wireguard/rodiox_publickey
+
+10. Добавляем в конфиг сервера клиента:
+vim /etc/wireguard/wg0.conf
+
+[Peer]
+PublicKey = <rodiox_publickey>
+AllowedIPs = 10.0.0.2/32
+
+Вместо <rodiox_publickey> — заменяем на содержимое файла /etc/wireguard/rodiox_publickey
+
+Перезагружаем systemd сервис с wireguard:
+systemctl restart wg-quick@wg0
+systemctl status wg-quick@wg0
+
+
+=========================================================================
+                        Настройка клиента linux
+=========================================================================
+
+1. vim /etc/wireguard/wg0.conf
+
+[Interface]
+PrivateKey = <CLIENT-PRIVATE-KEY>
+Address = 10.0.0.2/32
+DNS = 8.8.8.8
+
+[Peer]
+PublicKey = <SERVER-PUBKEY>
+Endpoint = <SERVER-IP>:51830
+AllowedIPs = 0.0.0.0/0
+PersistentKeepalive = 20
+
+<SERVER-IP> можно получить командой curl ifconfig.me на сервере.
+Этот файл открываем в Wireguard клиенте (есть для всех операционных систем, в том числе мобильных) — и жмем в клиенте кнопку подключения.
+
+2. Запускаем клиент и соединение. Проверяем статус.
+
+Прокидываем линк для решеняи ошибки (/usr/bin/wg-quick: line 32: resolvconf: command not found)
+ln -s /usr/bin/resolvectl /usr/local/bin/resolvconf
+
+sudo wg-quick up wg0
+sudo wg-quick down wg0
+sudo wg show
+
+Проверка ip: curl ifconfig.me
+Добавление в автозагрузку: sudo systemctl enable wg-quick@wg0
+Удаление из автозагрузки: sudo systemctl disable wg-quick@wg0
+

@@ -1,3 +1,5 @@
+Чистый django сервер.
+
 =========================================================================
                              Настройка SSH
 =========================================================================
@@ -15,7 +17,9 @@ cat ~/.ssh/id_rsa.pub | ssh username@remote_host "mkdir -p ~/.ssh &&
 cat >> ~/.ssh/authorized_keys".
 
 3. Выключение входа по паролю.
-sudo vi /etc/ssh/sshd_config - 'PasswordAuthentication no.'
+sudo vim /etc/ssh/sshd_config - 'PasswordAuthentication no.'
+
+
 
 4. Перезапуск сервера SSH.
 sudo service ssh restart
@@ -41,11 +45,6 @@ git clone https://github.com/rodionnest/conf
 Удаление .git и перемещение файлов в ~/. Удаление папки conf.
 
 5. Настройка локалей для mosh.
-sudo localedef ru_RU.UTF-8 -i ru_RU -fUTF-8 ; \
-export LANGUAGE=ru_RU.UTF-8 ; \
-export LANG=ru_RU.UTF-8 ; \
-export LC_ALL=ru_RU.UTF-8 ; \
-sudo locale-gen ru_RU.UTF-8 ; \
 sudo dpkg-reconfigure locales
 
 Выставляем ru_RU.UTF-8
@@ -85,18 +84,64 @@ sudo /home/www/.python/bin/python3.10 -m pip install -U pip
 vim ~/.zshrc
 export PATH=$PATH:/home/www/.python/bin
 
+
+=========================================================================
+                     Установка чистого Django проекта 
+=========================================================================
+
+1. Создаем директории для проекта.
+mkdir code && cd code 
+mkdir project_name && cd project_name
+
+2. Создаем виртуальное окружение и активируем его.
+python3.10 -m venv env && source /bin/env/activate
+
+3. Обновляем pip внутри окружения: pip install -U pip
+
+4. Устанавливаем Django: pip install django
+
+5. Выводим зависимости в файл: pip freeze > requirements.txt
+
+6. Создаем новый проект: django-admin startproject project_name
+
+7. Установка ipython: pip install ipython
+
+8. Создание нового приложения: python manage.py starapp app_name
+
+9. Добавление приложения в файл settings.py 
+INSTALLED_APPS: 'app_name'
+ALLOWED_HOSTS: 'ip и порт' !в кавычках
+
+10. Запуск сервера: python manage.py runserver 0.0.0.0:8000
+
+
+=========================================================================
+                   Подключение через Visual Studio Code	
+=========================================================================
+В Visual Studio Code должен быть установлен SSH Remote, а в linux openssl-client.
+
+code --remote ssh-remote+user@host /code/my_project
+
+
 -------------------ЗАКОНЧИЛ ЗДЕСЬ-----------------------
 
 
+=========================================================================
+                    Переменные окружения?????????????????                   
+=========================================================================
+
+=========================================================================
+                   Git через ssh и vps?????????????????	
+=========================================================================
 
 
-Ok, now we can pull our project from Git repository (or create own), create and activate Python virtual environment:
 
-cd code
-git pull project_git
-cd project_dir
-python3.7 -m venv env
-. ./env/bin/activate
+
+
+
+
+
+
 Install and configure PostgreSQL
 Install PostgreSQL 11 and configure locales.
 
