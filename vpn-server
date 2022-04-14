@@ -83,7 +83,7 @@ PersistentKeepalive = 20
 
 2. Запускаем клиент и соединение. Проверяем статус.
 
-Прокидываем линк для решеняи ошибки (/usr/bin/wg-quick: line 32: resolvconf: command not found)
+Прокидываем линк для решения ошибки (/usr/bin/wg-quick: line 32: resolvconf: command not found)
 ln -s /usr/bin/resolvectl /usr/local/bin/resolvconf
 
 sudo wg-quick up wg0
