@@ -1,8 +1,20 @@
 Чистый django сервер.
 
+
+Оглавление.
+
+$1. Настройка SSH.
+$2. Установка пакетов.
+$3. Установка Python.
+$4. Создание и настройка django-проекта. 
+$5. Настройка Git.
+
+
 =========================================================================
-                             Настройка SSH
+                             $1. Настройка SSH
 =========================================================================
+
+Не забываем пароль к ssh.
 
 1. Генерация ключей.
 ssh-keygen. По умолчанию ключи располагаются в папке ~/.ssh/. Секретный 
@@ -19,14 +31,12 @@ cat >> ~/.ssh/authorized_keys".
 3. Выключение входа по паролю.
 sudo vim /etc/ssh/sshd_config - 'PasswordAuthentication no.'
 
-
-
 4. Перезапуск сервера SSH.
 sudo service ssh restart
 
 
 =========================================================================
-                           Установка пакетов 
+                           $2. Установка пакетов 
 =========================================================================
 
 1. Обновляем информацию о пакетах и устанавливаем необходимые.
@@ -51,7 +61,7 @@ sudo dpkg-reconfigure locales
 Теперь можно подключаться через mosh.
 
 =========================================================================
-                           Установка Python
+                           $3. Установка Python
 =========================================================================
 
 Build from source python 3.7, install with prefix to ~/.python folder:
@@ -86,7 +96,7 @@ export PATH=$PATH:/home/www/.python/bin
 
 
 =========================================================================
-                     Установка чистого Django проекта 
+                $4. Создание и настройка django-проекта 
 =========================================================================
 
 1. Создаем директории для проекта.
@@ -94,49 +104,89 @@ mkdir code && cd code
 mkdir project_name && cd project_name
 
 2. Создаем виртуальное окружение и активируем его.
-python3.10 -m venv env && source /bin/env/activate
+python3.10 -m venv env && source /bin/env/activate (alias pmpenc pmpenva)
 
 3. Обновляем pip внутри окружения: pip install -U pip
 
-4. Устанавливаем Django: pip install django
+4. Устанавливаем Django и дополнительные пакеты: 
+pip install django autopep8 flake8 mypy django-environ
 
 5. Выводим зависимости в файл: pip freeze > requirements.txt
 
-6. Создаем новый проект: django-admin startproject project_name
+6. Создаем новый проект: django-admin startproject core .
 
 7. Установка ipython: pip install ipython
 
 8. Создание нового приложения: python manage.py starapp app_name
 
 9. Добавление приложения в файл settings.py 
-INSTALLED_APPS: 'app_name'
-ALLOWED_HOSTS: 'ip и порт' !в кавычках
 
-10. Запуск сервера: python manage.py runserver 0.0.0.0:8000
+
+=========================================================================
+                     $4.1 Переменные окружения. 
+=========================================================================
+
+1. Создаем файл .env в корне в папке с файлом settings.py.
+
+SECRET_KEY=
+DEBUG=True
+ALLOWED_HOSTS=127.0.0.1,localhost
+
+2. Корректируем settings.py
+
+import environ
+env = environ.Env(
+    DEBUG=(bool, False)
+)
+environ.Env.read_env()
+
+SECRET_KEY = env('SECRET_KEY')
+DEBUG = env('DEBUG')
+ALLOWED_HOSTS = env('ALLOWED_HOSTS').split(',')
+
+
+Запуск сервера: python manage.py runserver 0.0.0.0:8000 (alias pmprs)
 
 
 =========================================================================
                    Подключение через Visual Studio Code	
 =========================================================================
-В Visual Studio Code должен быть установлен SSH Remote, а в linux openssl-client.
+В Visual Studio Code должен быть установлен SSH Remote, а в linux openssl.
+Проверить: dpkg -s [имя_пакета]
 
-code --remote ssh-remote+user@host /code/my_project
+code --remote ssh-remote+user@host /home/www/code
 
+
+=========================================================================
+                          $5. Настройка Git.
+=========================================================================
+
+1. Создаем .gitignore
+
+.gitignore
+/env/*
+/.mypy_cache/*
+/tweb/tweb/.env
+
+2. Настраиваем и инициализируем гит: 
+
+git init
+git config --global user.name "John Doe"
+git config --global user.email johndoe@example.com
+git config --global core.editor "vim"
+
+3. Добавляем и коммитим файлы
+git add .
+git commit
+
+4. Выгружаем на Github с помощью VSCode или с помощью терминала (при на-
+личии добавленного в github SSH-ключа, сгенерированного на сервере).
+
+git branch -M main
+git remote add origin git@github.com:rodionnest/test2.git
+git push -u origin main
 
 -------------------ЗАКОНЧИЛ ЗДЕСЬ-----------------------
-
-
-=========================================================================
-                    Переменные окружения?????????????????                   
-=========================================================================
-
-=========================================================================
-                   Git через ssh и vps?????????????????	
-=========================================================================
-
-
-
-
 
 
 
