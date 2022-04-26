@@ -37,19 +37,7 @@ Delete multiple words.
 --->  this ABC DE line FGHI JK LMN OP of words is Q RS TUV cleaned up.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-			 Lesson 2.6: OPERATING ON LINES
-
-
-		   ** Type  dd   to delete a whole line. **
-
-  Due to the frequency of whole line deletion, the designers of Vi decided
-  it would be easier to simply type two d's to delete a line.
-
-  1. Move the cursor to the second line in the phrase below.
-  2. Type  dd  to delete the line.
-  3. Now move to the fourth line.
-  4. Type   2dd   to delete two lines.
-
+Delete line 2 and lines 5 and 6.
 --->  1)  Roses are red,
 --->  2)  Mud is fun,
 --->  3)  Violets are blue,
@@ -60,66 +48,14 @@ Delete multiple words.
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-			 Lesson 2.7: THE UNDO COMMAND
-
-
-   ** Press  u	to undo the last commands,   U  to fix a whole line. **
-
-  1. Move the cursor to the line below marked ---> and place it on the
-     first error.
-  2. Type  x  to delete the first unwanted character.
-  3. Now type  u  to undo the last command executed.
-  4. This time fix all the errors on the line using the  x  command.
-  5. Now type a capital  U  to return the line to its original state.
-  6. Now type  u  a few times to undo the  U  and preceding commands.
-  7. Now type CTRL-R (keeping CTRL key pressed while hitting R) a few times
-     to redo the commands (undo the undo's).
+Fix the errors on the line, then restore line by U, then redo changes by
+Ctrl-R. Undo by u.
 
 ---> Fiix the errors oon thhis line and reeplace them witth undo.
 
-  8. These are very useful commands.  Now move on to the lesson 2 Summary.
-
-
-
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-			       Lesson 2 SUMMARY
-
-
-  1. To delete from the cursor up to the next word type:    dw
-  2. To delete from the cursor to the end of a line type:    d$
-  3. To delete a whole line type:    dd
-
-  4. To repeat a motion prepend it with a number:   2w
-  5. The format for a change command is:
-               operator   [number]   motion
-     where:
-       operator - is what to do, such as  d  for delete
-       [number] - is an optional count to repeat the motion
-       motion   - moves over the text to operate on, such as  w (word),
-		  $ (to the end of line), etc.
-
-  6. To move to the start of the line use a zero:  0
-
-  7. To undo previous actions, type: 	       u  (lowercase u)
-     To undo all the changes on a line, type:  U  (capital U)
-     To undo the undo's, type:		       CTRL-R
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-			 Lesson 3.1: THE PUT COMMAND
-
-
-       ** Type	p  to put previously deleted text after the cursor. **
-
-  1. Move the cursor to the first line below marked --->.
-
-  2. Type  dd  to delete the line and store it in a Vim register.
-
-  3. Move the cursor to the c) line, ABOVE where the deleted line should go.
-
-  4. Type   p   to put the line below the cursor.
-
-  5. Repeat steps 2 through 4 to put all the lines in correct order.
+Put all the lines in correct order.
 
 ---> d) Can you learn too?
 ---> b) Violets are blue,
